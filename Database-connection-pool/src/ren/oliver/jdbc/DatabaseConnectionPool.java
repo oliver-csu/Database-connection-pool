@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.LinkedList;
 import java.util.logging.Logger;
-
 import javax.sql.DataSource;
 
 public class DatabaseConnectionPool implements DataSource{
@@ -17,7 +16,9 @@ public class DatabaseConnectionPool implements DataSource{
 	static{
 		for (int i = 0; i < 5; i++) {
 			Connection conn = JDBCUtils.getConnection();
-			pool.add(conn);
+			//放入池子中connection对象已经经过改造了
+			MyConnection myconn = new MyConnection(conn, pool);
+			pool.add(myconn);
 		}
 	}
 	
@@ -32,7 +33,9 @@ public class DatabaseConnectionPool implements DataSource{
 			//4.池子里面没有，我们再创建一些
 			for (int i = 0; i < 5; i++) {
 				conn = JDBCUtils.getConnection();
-				pool.add(conn);
+				//放入池子中connection对象已经经过改造了
+				MyConnection myconn = new MyConnection(conn, pool);
+				pool.add(myconn);
 			}
 		}
 		//5.从池子里面获取一个连接对象Connection
